@@ -30,6 +30,7 @@ import { useUser } from "../../../store/slices/userSlice";
 import AddProductBarcode from "./AddProductBarcode";
 import { id } from "date-fns/locale";
 import MarriageModal from "./MarriageModal";
+import EditModal from "./EditModal/EditModal";
 
 /* ===================== ВСПОМОГАТЕЛЬНЫЕ МОДАЛКИ ===================== */
 
@@ -79,260 +80,267 @@ const AddBrandModal = ({ onClose }) => {
   );
 };
 
-const EditModal = ({ item, onClose, onSaveSuccess, onDeleteConfirm }) => {
-  const dispatch = useDispatch();
-  const { updating, updateError, deleting, deleteError } = useSelector(
-    (state) => state.product
-  );
+// const EditModal = ({ item, onClose, onSaveSuccess, onDeleteConfirm }) => {
+//   const dispatch = useDispatch();
+//   const { updating, updateError, deleting, deleteError } = useSelector(
+//     (state) => state.product
+//   );
 
-  const { brands, categories } = useProducts();
+//   const { brands, categories } = useProducts();
 
-  const [editedItem, setEditedItem] = useState({
-    id: item.id || "",
-    name: item.name || "",
-    barcode: item.barcode || "",
-    brand: item.brand || "",
-    category: item.category || "",
-    client: item.client || "",
-    price: item.price || "",
-    purchase_price: item.purchase_price || "",
-    quantity: item.quantity || "",
-  });
+//   const [editedItem, setEditedItem] = useState({
+//     id: item.id || "",
+//     name: item.name || "",
+//     barcode: item.barcode || "",
+//     brand: item.brand || "",
+//     category: item.category || "",
+//     client: item.client || "",
+//     price: item.price || "",
+//     purchase_price: item.purchase_price || "",
+//     quantity: item.quantity || "",
+//   });
 
-  const handleChange = (e) => {
-    const { name, value, type } = e.target;
-    setEditedItem((prevData) => ({
-      ...prevData,
-      [name]: type === "number" ? (value === "" ? "" : value) : value,
-    }));
-  };
-  const { list } = useClient();
-  const filterClient1 = list.filter((item) => item.type === "suppliers");
-  const [showInputs, setShowInputs] = useState(false);
-  console.log(item);
+//   const handleChange = (e) => {
+//     const { name, value, type } = e.target;
+//     setEditedItem((prevData) => ({
+//       ...prevData,
+//       [name]: type === "number" ? (value === "" ? "" : value) : value,
+//     }));
+//   };
+//   const { list } = useClient();
+//   const filterClient1 = list.filter((item) => item.type === "suppliers");
+//   const [showInputs, setShowInputs] = useState(false);
+//   console.log(item);
 
-  const handleSave = async () => {
-    // if (
-    //   !editedItem.name ||
-    //   !editedItem.barcode ||
-    //   !editedItem.brand_name ||
-    //   !editedItem.category_name ||
-    //   !editedItem.client ||
-    //   editedItem.price === "" ||
-    //   editedItem.purchase_price === "" ||
-    //   editedItem.quantity === ""
-    // ) {
-    //   alert(
-    //     "Пожалуйста, заполните все обязательные поля: Название, Штрих код, Бренд, Категория, Поставщик, Розничная цена, Закупочная цена, Количество."
-    //   );
-    //   return;
-    // }
+//   const handleSave = async () => {
+//     // if (
+//     //   !editedItem.name ||
+//     //   !editedItem.barcode ||
+//     //   !editedItem.brand_name ||
+//     //   !editedItem.category_name ||
+//     //   !editedItem.client ||
+//     //   editedItem.price === "" ||
+//     //   editedItem.purchase_price === "" ||
+//     //   editedItem.quantity === ""
+//     // ) {
+//     //   alert(
+//     //     "Пожалуйста, заполните все обязательные поля: Название, Штрих код, Бренд, Категория, Поставщик, Розничная цена, Закупочная цена, Количество."
+//     //   );
+//     //   return;
+//     // }
 
-    try {
-      const dataToSave = {
-        ...editedItem,
-        price: parseFloat(editedItem.price),
-        purchase_price: parseFloat(editedItem.purchase_price),
-        quantity: parseInt(editedItem.quantity, 10),
-      };
+//     try {
+//       const dataToSave = {
+//         ...editedItem,
+//         price: parseFloat(editedItem.price),
+//         purchase_price: parseFloat(editedItem.purchase_price),
+//         quantity: parseInt(editedItem.quantity, 10),
+//       };
 
-      await dispatch(
-        updateProductAsync({ productId: item.id, updatedData: dataToSave })
-      ).unwrap();
-      onClose();
-      onSaveSuccess();
-    } catch (err) {
-      console.error("Failed to update product:", err);
-      alert(
-        `Ошибка при обновлении товара: ${err.message || JSON.stringify(err)}`
-      );
-    }
-  };
+//       await dispatch(
+//         updateProductAsync({ productId: item.id, updatedData: dataToSave })
+//       ).unwrap();
+      
+//       await  dispatch(
+//         addCashFlows({
+//           ...editedItem,
+//           amount: (+editedItem.quantity).toFixed(2),
+//         })
+//       ).unwrap();
+//       onClose();
+//       onSaveSuccess();
+//     } catch (err) {
+//       console.error("Failed to update product:", err);
+//       alert(
+//         `Ошибка при обновлении товара: ${err.message || JSON.stringify(err)}`
+//       );
+//     }
+//   };
 
-  const handleDelete = async () => {
-    if (
-      window.confirm(`Вы уверены, что хотите удалить товар "${item?.name}"?`)
-    ) {
-      try {
-        await dispatch(deleteProductAsync(item.id)).unwrap();
-        onClose();
-        onDeleteConfirm();
-      } catch (err) {
-        console.error("Failed to delete product:", err);
-        alert(
-          `Ошибка при удалении товара: ${err.message || JSON.stringify(err)}`
-        );
-      }
-    }
-  };
+//   const handleDelete = async () => {
+//     if (
+//       window.confirm(`Вы уверены, что хотите удалить товар "${item?.name}"?`)
+//     ) {
+//       try {
+//         await dispatch(deleteProductAsync(item.id)).unwrap();
+//         onClose();
+//         onDeleteConfirm();
+//       } catch (err) {
+//         console.error("Failed to delete product:", err);
+//         alert(
+//           `Ошибка при удалении товара: ${err.message || JSON.stringify(err)}`
+//         );
+//       }
+//     }
+//   };
 
-  useEffect(() => {
-    dispatch(fetchBrandsAsync());
-    dispatch(fetchCategoriesAsync());
-    dispatch(fetchClientsAsync());
-  }, []);
+//   useEffect(() => {
+//     dispatch(fetchBrandsAsync());
+//     dispatch(fetchCategoriesAsync());
+//     dispatch(fetchClientsAsync());
+//   }, []);
 
-  return (
-    <div className="edit-modal sklad">
-      <div className="edit-modal__overlay" onClick={onClose} />
-      <div className="edit-modal__content">
-        <div className="edit-modal__header">
-          <h3>Редактирование товара {item?.name}</h3>
-          <X className="edit-modal__close-icon" size={20} onClick={onClose} />
-        </div>
+//   return (
+//     <div className="edit-modal sklad">
+//       <div className="edit-modal__overlay" onClick={onClose} />
+//       <div className="edit-modal__content">
+//         <div className="edit-modal__header">
+//           <h3>Редактирование товара {item?.name}</h3>
+//           <X className="edit-modal__close-icon" size={20} onClick={onClose} />
+//         </div>
 
-        {updateError && (
-          <p className="edit-modal__error-message">
-            Ошибка обновления:{" "}
-            {updateError.message || JSON.stringify(updateError)}
-          </p>
-        )}
-        {deleteError && (
-          <p className="edit-modal__error-message">
-            Ошибка удаления:{" "}
-            {deleteError.message || JSON.stringify(deleteError)}
-          </p>
-        )}
+//         {updateError && (
+//           <p className="edit-modal__error-message">
+//             Ошибка обновления:{" "}
+//             {updateError.message || JSON.stringify(updateError)}
+//           </p>
+//         )}
+//         {deleteError && (
+//           <p className="edit-modal__error-message">
+//             Ошибка удаления:{" "}
+//             {deleteError.message || JSON.stringify(deleteError)}
+//           </p>
+//         )}
 
-        {/* Название */}
-        <div className="edit-modal__section">
-          <label>Название *</label>
-          <input
-            type="text"
-            name="name"
-            value={editedItem.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
+//         {/* Название */}
+//         <div className="edit-modal__section">
+//           <label>Название *</label>
+//           <input
+//             type="text"
+//             name="name"
+//             value={editedItem.name}
+//             onChange={handleChange}
+//             required
+//           />
+//         </div>
 
-        {/* Штрих код */}
-        <div className="edit-modal__section">
-          <label>Штрих код *</label>
-          <input
-            type="text"
-            name="barcode"
-            value={editedItem.barcode}
-            onChange={handleChange}
-            required
-          />
-        </div>
+//         {/* Штрих код */}
+//         <div className="edit-modal__section">
+//           <label>Штрих код *</label>
+//           <input
+//             type="text"
+//             name="barcode"
+//             value={editedItem.barcode}
+//             onChange={handleChange}
+//             required
+//           />
+//         </div>
 
-        {/* Бренд */}
-        <div className="edit-modal__section">
-          <label>Бренд *</label>
-          <select
-            name="brand_name"
-            value={editedItem.brand}
-            onChange={handleChange}
-            required
-          >
-            <option value="">-- Выберите бренд --</option>
-            {brands?.map((brand, idx) => (
-              <option key={brand.id ?? idx} value={brand.name}>
-                {brand.name}
-              </option>
-            ))}
-          </select>
-        </div>
+//         {/* Бренд */}
+//         <div className="edit-modal__section">
+//           <label>Бренд *</label>
+//           <select
+//             name="brand_name"
+//             value={editedItem.brand}
+//             onChange={handleChange}
+//             required
+//           >
+//             <option value="">-- Выберите бренд --</option>
+//             {brands?.map((brand, idx) => (
+//               <option key={brand.id ?? idx} value={brand.name}>
+//                 {brand.name}
+//               </option>
+//             ))}
+//           </select>
+//         </div>
 
-        {/* Категория */}
-        <div className="edit-modal__section">
-          <label>Категория *</label>
-          <select
-            name="category_name"
-            value={editedItem.category}
-            onChange={handleChange}
-            required
-          >
-            <option value="">-- Выберите категорию --</option>
-            {categories?.map((category, idx) => (
-              <option key={category.id ?? idx} value={category.name}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </div>
+//         {/* Категория */}
+//         <div className="edit-modal__section">
+//           <label>Категория *</label>
+//           <select
+//             name="category_name"
+//             value={editedItem.category}
+//             onChange={handleChange}
+//             required
+//           >
+//             <option value="">-- Выберите категорию --</option>
+//             {categories?.map((category, idx) => (
+//               <option key={category.id ?? idx} value={category.name}>
+//                 {category.name}
+//               </option>
+//             ))}
+//           </select>
+//         </div>
 
-        {/* Поставщик */}
-        <div className="edit-modal__section">
-          <label>Поставщик *</label>
-          <select
-            name="client"
-            value={editedItem.client}
-            onChange={handleChange}
-            required
-          >
-            <option value="">-- Выберите поставщика --</option>
-            {filterClient1?.map((client, idx) => (
-              <option key={client.id ?? idx} value={client.id}>
-                {client.full_name}
-              </option>
-            ))}
-          </select>
-        </div>
+//         {/* Поставщик */}
+//         <div className="edit-modal__section">
+//           <label>Поставщик *</label>
+//           <select
+//             name="client"
+//             value={editedItem.client}
+//             onChange={handleChange}
+//             required
+//           >
+//             <option value="">-- Выберите поставщика --</option>
+//             {filterClient1?.map((client, idx) => (
+//               <option key={client.id ?? idx} value={client.id}>
+//                 {client.full_name}
+//               </option>
+//             ))}
+//           </select>
+//         </div>
 
-        {/* Розничная цена */}
-        <div className="edit-modal__section">
-          <label>Розничная цена *</label>
-          <input
-            type="number"
-            name="price"
-            value={editedItem.price}
-            onChange={handleChange}
-            min="0"
-            step="0.01"
-            required
-          />
-        </div>
+//         {/* Розничная цена */}
+//         <div className="edit-modal__section">
+//           <label>Розничная цена *</label>
+//           <input
+//             type="number"
+//             name="price"
+//             value={editedItem.price}
+//             onChange={handleChange}
+//             min="0"
+//             step="0.01"
+//             required
+//           />
+//         </div>
 
-        {/* Закупочная цена */}
-        <div className="edit-modal__section">
-          <label>Закупочная цена *</label>
-          <input
-            type="number"
-            name="purchase_price"
-            value={editedItem.purchase_price}
-            onChange={handleChange}
-            min="0"
-            step="0.01"
-            required
-          />
-        </div>
+//         {/* Закупочная цена */}
+//         <div className="edit-modal__section">
+//           <label>Закупочная цена *</label>
+//           <input
+//             type="number"
+//             name="purchase_price"
+//             value={editedItem.purchase_price}
+//             onChange={handleChange}
+//             min="0"
+//             step="0.01"
+//             required
+//           />
+//         </div>
 
-        {/* Количество */}
-        <div className="edit-modal__section">
-          <label>Количество *</label>
-          <input
-            type="number"
-            name="quantity"
-            value={editedItem.quantity}
-            onChange={handleChange}
-            min="0"
-            required
-          />
-        </div>
+//         {/* Количество */}
+//         <div className="edit-modal__section">
+//           <label>Количество *</label>
+//           <input
+//             type="number"
+//             name="quantity"
+//             value={editedItem.quantity}
+//             onChange={handleChange}
+//             min="0"
+//             required
+//           />
+//         </div>
 
-        <div className="edit-modal__footer">
-          <button
-            className="edit-modal__reset"
-            onClick={handleDelete}
-            disabled={deleting || updating}
-          >
-            {deleting ? "Удаление..." : "Удалить"}
-          </button>
-          <button
-            className="edit-modal__save"
-            onClick={handleSave}
-            disabled={updating || deleting}
-          >
-            {updating ? "Сохранение..." : "Сохранить"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+//         <div className="edit-modal__footer">
+//           <button
+//             className="edit-modal__reset"
+//             onClick={handleDelete}
+//             disabled={deleting || updating}
+//           >
+//             {deleting ? "Удаление..." : "Удалить"}
+//           </button>
+//           <button
+//             className="edit-modal__save"
+//             onClick={handleSave}
+//             disabled={updating || deleting}
+//           >
+//             {updating ? "Сохранение..." : "Сохранить"}
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
 const FilterModal = ({
   onClose,

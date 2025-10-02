@@ -104,6 +104,13 @@ const SellModal = ({ onClose, id, selectCashBox }) => {
     email: "",
     date: new Date().toISOString().split("T")[0],
     type: "client",
+     llc: "",
+    inn: "",
+    okpo: "",
+    score: "",
+    bik: "",
+    address: "",
+    
   });
   const [cashData, setCashData] = useState({
     cashbox: "",
@@ -511,7 +518,7 @@ export default SellModal;
    2) PaymentBlock — выносим в чистую функцию + useMemo-хелпер
    ========================= */
 function PaymentBlock({ sectorName, debt, setDebt, phone, setPhone }) {
-  if (sectorName !== "Магазин") return null;
+ 
   return (
     <>
       <div className="add-modal__section">
@@ -542,15 +549,19 @@ function PaymentBlock({ sectorName, debt, setDebt, phone, setPhone }) {
 }
 
 // мемо-хелпер, чтобы не держать громкий useMemo внутри SellModal
-const paymentBlockMemo = (sectorName, debt, phone, setDebt, setPhone) => (
-  <PaymentBlock
+const paymentBlockMemo = (sectorName, debt, phone, setDebt, setPhone) => {
+ 
+
+
+   if (sectorName !== "Магазин" && !window.location.href.includes('agents')) return '';
+  return <PaymentBlock
     sectorName={sectorName}
     debt={debt}
     setDebt={setDebt}
     phone={phone}
     setPhone={setPhone}
   />
-);
+};
 
 /* =========================
    3) ManualList (устойчивый к undefined)
@@ -630,7 +641,7 @@ const ManualList = React.memo(function ManualList({
                       type="number"
                       value={discount}
                       onChange={(e) => setDiscount(e.target.value)}
-                      placeholder="Скидка (%)"
+                      placeholder="Скидка (сом)"
                     />
                     <button type="button" onClick={() => saveInline(pid)}>
                       Сохранить
@@ -709,37 +720,92 @@ const ClientBlock = React.memo(function ClientBlock({
         {showCreateClient ? "Отменить" : "Создать клиента"}
       </button>
 
-      {showCreateClient && (
-        <form
-          style={{ display: "flex", flexDirection: "column", rowGap: 10 }}
-          onSubmit={createClient}
-        >
-          <input
-            className="add-modal__input"
-            onChange={onNewClientChange}
-            name="full_name"
-            placeholder="ФИО"
-            value={newClient.full_name}
-          />
-          <input
-            className="add-modal__input"
-            onChange={onNewClientChange}
-            name="phone"
-            placeholder="Телефон"
-            value={newClient.phone}
-          />
-          <input
-            className="add-modal__input"
-            onChange={onNewClientChange}
-            name="email"
-            placeholder="Почта"
-            value={newClient.email}
-          />
-          <button type="submit" className="create-client">
-            Создать
-          </button>
-        </form>
-      )}
+    
+   {showCreateClient && (
+              <form
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  rowGap: "10px",
+                }}
+                onSubmit={createClient}
+              >
+                <input
+                  className="add-modal__input"
+                    onChange={onNewClientChange}
+                  type="text"
+                  placeholder="ФИО"
+                  name="full_name"
+                />
+                <input
+                  className="add-modal__input"
+                    onChange={onNewClientChange}
+                  type="text"
+                  name="llc"
+                  placeholder="ОсОО"
+                />
+                <input
+                  className="add-modal__input"
+                    onChange={onNewClientChange}
+                  type="text"
+                  name="inn"
+                  placeholder="ИНН"
+                />
+                <input
+                  className="add-modal__input"
+                     onChange={onNewClientChange}
+                  type="text"
+                  name="okpo"
+                  placeholder="ОКПО"
+                />
+                <input
+                  className="add-modal__input"
+                    onChange={onNewClientChange}
+                  type="text"
+                  name="score"
+                  placeholder="Р/СЧЁТ"
+                />
+                <input
+                  className="add-modal__input"
+                    onChange={onNewClientChange}
+                  type="text"
+                  name="bik"
+                  placeholder="БИК"
+                />
+                <input
+                  className="add-modal__input"
+                  onChange={onNewClientChange}
+                  type="text"
+                  name="address"
+                  placeholder="Адрес"
+                />
+                <input
+                  className="add-modal__input"
+                  onChange={onNewClientChange}
+                  type="text"
+                  name="phone"
+                  placeholder="Телефон"
+                />
+                <input
+                  className="add-modal__input"
+                  onChange={onNewClientChange}
+                  type="email"
+                  name="email"
+                  placeholder="Почта"
+                />
+                <div style={{ display: "flex", columnGap: "10px" }}>
+                  <button
+                    className="create-client"
+                    type="button"
+                    onClick={() => setShowCreateClient(false)}
+                  >
+                    Отмена
+                  </button>
+                  <button className="create-client">Создать</button>
+                </div>
+              </form>
+            )}
+
 
       {company?.sector?.name === "Строительная компания" && (
         <select className="add-modal__input" defaultValue="">

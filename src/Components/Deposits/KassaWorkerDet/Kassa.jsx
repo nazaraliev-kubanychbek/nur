@@ -272,14 +272,14 @@ const KassaDet = () => {
           </button>
         </div>
         <br />
-        {company?.sector?.name === "Консалтинг" && (
+      
           <button
             className=" sklad__add vitrina__add-expense-button vitrina__button vitrina__button--delete "
             onClick={() => setShowAddCashboxModal(true)}
           >
-            Добавить операцию
+            Добавить расход
           </button>
-        )}
+        
       </div>
 
       <div className="vitrina__toolbar">
@@ -406,7 +406,7 @@ const KassaDet = () => {
         <div className="vitrina__overlay">
           <div className="vitrina__modal vitrina__modal--add">
             <div className="vitrina__modal-header">
-              <h3>Добавление операции по кассе</h3>
+              <h3>Добавление расхода</h3>
               <X
                 className="vitrina__close-icon"
                 size={20}
@@ -440,7 +440,7 @@ const KassaDet = () => {
                 }
               />
             </div>
-            <div className="vitrina__modal-section">
+            {/* <div className="vitrina__modal-section">
               <label>Тип операции</label>
               <select
                 className="vitrina__modal-input"
@@ -452,7 +452,7 @@ const KassaDet = () => {
                 <option value="expense">Расход</option>
                 <option value="income">Приход</option>
               </select>
-            </div>
+            </div> */}
             <div className="vitrina__modal-footer">
               <button
                 className="vitrina__button vitrina__button--cancel"

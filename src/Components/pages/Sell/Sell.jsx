@@ -151,7 +151,8 @@ const SellBuildingModal = ({ onClose }) => {
   useEffect(() => {
     dispatch(fetchClientsAsync());
     dispatch(getCashBoxes());
-  }, [dispatch]);
+  
+  },[dispatch]);
 
   // Подгрузка объектов, когда корзина создана
   useEffect(() => {
@@ -807,11 +808,11 @@ const Sell = () => {
   const onChange = (e) => debouncedSearch(e.target.value);
 
   useEffect(() => {
-    if (showSellModal) {
+  
       dispatch(historySellProduct({ search: "" }));
       dispatch(historySellObjects({ search: "" }));
-    }
-  }, [dispatch, showSellModal]);
+   
+  }, [dispatch, ]);
 
   useEffect(() => {
     if (showSellModal) dispatch(startSale());
